@@ -64,7 +64,7 @@ error_msg(unsigned err)
 }
 
 /******************************************************************************
- * Print to stderr. Right now, it's just a wrapper aroun fprintf(stderr), but
+ * Print to stderr. Right now, it's just a wrapper around fprintf(stderr), but
  * I do it this way so I can later add different DEBUG levels.
  ******************************************************************************/
 int ERROR_MSG(const char *fmt, ...)
@@ -164,7 +164,7 @@ recv_nvt_line(int fd, char *buf, int sizeof_buf, int flags, int *in_state)
 		unsigned char c;
 		int len;
 
-		/* Receivine ONE byte at a time and process it. This is rather 
+		/* Receiving ONE byte at a time and process it. This is rather
 		 * slow, but we don't care about speed */
 		len = recv(fd, (char*)&c, 1, flags);
 		if (len < 0) {
