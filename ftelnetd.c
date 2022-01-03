@@ -21,6 +21,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "bjoernhoehrmann.h"
+
 #define closesocket(fd) close(fd)
 #define WSA(err) (err)
 #define WSAGetLastError() (errno)
@@ -64,7 +66,7 @@ error_msg(unsigned err)
 }
 
 /******************************************************************************
- * Print to stderr. Right now, it's just a wrapper around fprintf(stderr), but
+ * Print to stderr. Right now, it's just a wrapper aroun fprintf(stderr), but
  * I do it this way so I can later add different DEBUG levels.
  ******************************************************************************/
 int ERROR_MSG(const char *fmt, ...)
@@ -164,7 +166,7 @@ recv_nvt_line(int fd, char *buf, int sizeof_buf, int flags, int *in_state)
 		unsigned char c;
 		int len;
 
-		/* Receiving ONE byte at a time and process it. This is rather
+		/* Receivine ONE byte at a time and process it. This is rather 
 		 * slow, but we don't care about speed */
 		len = recv(fd, (char*)&c, 1, flags);
 		if (len < 0) {
@@ -353,9 +355,16 @@ again:
 	struct sockaddr_in6 *s = (struct sockaddr_in6*)&args->peer;
 	int peerport = ntohs(s->sin6_port);
 
-        /* Send the login attempt to syslog */
-        syslog(syslog_pri, "saddr: %s; sport: %d; login: %s; password: %s",
-		args->peername, peerport, login, password);
+	size_t count = 0;
+
+	/* Check if login and password are valid UTF-8 */
+	if (countCodePoints((uint8_t *)login, &count) || countCodePoints((uint8_t *)password, &count)) {
+		  syslog(syslog_pri, "UTF-8 encoded login or password detected: saddr: %s; sport: %d; login: %s; password: %s", args->peername, peerport, login, password);
+	} else {
+        	/* Send the login attempt to syslog */
+        	syslog(syslog_pri, "saddr: %s; sport: %d; login: %s; password: %s",
+			args->peername, peerport, login, password);
+	}
 
 	/* Print error and loop around to do it again */
 	if (state == 1)
