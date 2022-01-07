@@ -359,7 +359,7 @@ again:
 
 	/* Check if login and password are valid UTF-8 */
 	if (countCodePoints((uint8_t *)login, &count) || countCodePoints((uint8_t *)password, &count)) {
-		  syslog(syslog_pri, "UTF-8 encoded login or password detected: saddr: %s; sport: %d; login: %s; password: %s", args->peername, peerport, login, password);
+		  syslog(syslog_pri, "UTF-8 encoded encoded content detected: saddr: %s; sport: %d; login: %s; password: %s", args->peername, peerport, login, password);
 	} else {
         	/* Send the login attempt to syslog */
         	syslog(syslog_pri, "saddr: %s; sport: %d; login: %s; password: %s",
